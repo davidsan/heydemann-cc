@@ -236,44 +236,43 @@ Il faut donc parcourir toutes les lignes d'un programme et construire avec chaqu
 */
 
 void Program::comput_function(){
-    Function *func;
-    Node *element_debut=NULL;
-    Node* current = _head;
-    Line *l=NULL;
-    Directive *d=NULL;
-    string direct;
-
-    // A REMPLIR
-    // parcours des lignes
-    while (current != NULL) {
-
-        l = current->get_line();
-        // on cherche une directive
-        if(!l->isDirective()){
-            current = current->get_next();
-            continue;
-        }
-        d=(dynamic_cast <Directive *> (l));
-        // qui commence par .ent ou .end
-        direct = d->get_content();
-        if (direct.compare(0, 4, ".ent") == 0) {
-            // début de fonction détecté
-            element_debut = current;
-        }else if (direct.compare(0, 4, ".end") == 0) {
-            // fin de fonction détecté
-            // allocation dune nouvelle fonction
-            func = new Function();
-            // initialisation de la fonction
-            func->set_head(element_debut);
-            func->set_end(current);
-            // insertion dans la liste des fonctions
-            _myfunc.push_back(func);
-        }
-        current = current->get_next();
-    }
+  Function *func;
+  Node *element_debut=NULL;
+  Node* current = _head;
+  Line *l=NULL;
+  Directive *d=NULL;
+  string direct;
+  
+  // parcours des lignes
+  while (current != NULL) {
     
-    if (is_empty())
-        cout<<"The program is empty"<<endl;
+    l = current->get_line();
+    // on cherche une directive
+    if(!l->isDirective()){
+      current = current->get_next();
+      continue;
+    }
+    d=(dynamic_cast <Directive *> (l));
+    // qui commence par .ent ou .end
+    direct = d->get_content();
+    if (direct.compare(0, 4, ".ent") == 0) {
+      // début de fonction détecté
+      element_debut = current;
+    }else if (direct.compare(0, 4, ".end") == 0) {
+      // fin de fonction détecté
+      // allocation dune nouvelle fonction
+      func = new Function();
+      // initialisation de la fonction
+      func->set_head(element_debut);
+      func->set_end(current);
+      // insertion dans la liste des fonctions
+      _myfunc.push_back(func);
+    }
+    current = current->get_next();
+  }
+  
+  if (is_empty())
+    cout<<"The program is empty"<<endl;
 }
 
 int Program::nbr_func(){
