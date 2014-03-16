@@ -196,18 +196,14 @@ void Function::comput_basic_block(){
   cout<<"head :"<<_head->get_lineContent()<<endl;
   cout<<"tail :"<<_end->get_lineContent()<<endl;
   
-  current=current->get_next();
+  
   // faire avancer le pointeur current après le label de la fonction
-  while(current != NULL && current != _end && !current->get_line()->isLabel()){
+  while(current && current != _end && !current->get_line()->isInst()){
     current=current->get_next();
   }
-  if(!current){
-    cerr<<"problem!"<<endl;
-    return;
-  }
-  current=current->get_next();
+
   // parcours des lignes restantes
-  while(current != NULL && current != _end){
+  while(current && current != _end){
     l = current->get_line();
     if(l->isDirective()){
       prev = current;
@@ -230,6 +226,7 @@ void Function::comput_basic_block(){
       if(i->get_type() == BR){
         // instruction de type t_Type.BR
         add_BB(debut,current->get_next(),ind);
+        get_BB(nbr_BB()-1)->set_branch(current);
         debut=current->get_next()->get_next();
         ind++;
         // on zappe déjà le prochain
