@@ -219,12 +219,12 @@ void Program::in_file(string const filename){
    monflux.close();	
 }
 
-/* Il faut ici délimite les fonctions du fichier assembleur en détectant les directives .ent et .end qui indique le début et la function d'une fonction 
-Il faut donc parcourir toutes les lignes d'un programme et construire avec chaque couple de ligne comportant les directives .ent FCT et .end FCT une nouvelle fonction et l'ajouter à la liste des fonctions du programme
+/* Il faut ici dÃ©limite les fonctions du fichier assembleur en dÃ©tectant les directives .ent et .end qui indique le dÃ©but et la function d'une fonction 
+Il faut donc parcourir toutes les lignes d'un programme et construire avec chaque couple de ligne comportant les directives .ent FCT et .end FCT une nouvelle fonction et l'ajouter Ã  la liste des fonctions du programme
 
 */
 
-/* NB : la méthode get_content() permet de récupérer une chaine de caractère correspondant au contenu d'une ligne/directive/label/instruction. Par exemple :
+/* NB : la mÃ©thode get_content() permet de rÃ©cupÃ©rer une chaine de caractÃ¨re correspondant au contenu d'une ligne/directive/label/instruction. Par exemple :
 
   string ma_chaine = ma_ligne->get_content();
 
@@ -277,11 +277,11 @@ list<Function*>::iterator Program::function_list_end(){
 }
 
 
-/* Pour chaque fonction du programme, donc de la liste _myfunc, il faut créer un CFG et l'ajouter à la liste _myCFG ;
-   La création d'un CFG se fait avec un appel au constructeur, par exemple : 
+/* Pour chaque fonction du programme, donc de la liste _myfunc, il faut crÃ©er un CFG et l'ajouter Ã  la liste _myCFG ;
+   La crÃ©ation d'un CFG se fait avec un appel au constructeur, par exemple : 
    Cfg * cfg = new Cfg(bb0, n);
-   crée un CFG dont le BB d'entrée est bb0 et contenant n BBs.
-   Il faut avoir calculé les blocs de base des fonctions et les succ/pred des BB sinon le CFG n'aura qu'un bloc, le premier (meme si on dit qu'il en a n en paramètre)
+   crÃ©e un CFG dont le BB d'entrÃ©e est bb0 et contenant n BBs.
+   Il faut avoir calculÃ© les blocs de base des fonctions et les succ/pred des BB sinon le CFG n'aura qu'un bloc, le premier (meme si on dit qu'il en a n en paramÃ¨tre)
 */
 
 void  Program::comput_CFG(){
