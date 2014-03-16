@@ -30,13 +30,18 @@ int main(int argc, char ** argv){
   cout << "dans le fichier " << argv[1]  << " nb function : " << p2.nbr_func() << endl;
     
   /* TEST DU CALCUL DES BB d'une fonction */
-  /* Pour tester le calcul des BB d'une fonction */ 
-  /* Function * fct = p2.get_function(0);
-     fct -> comput_basic_block(); 
+  /* Pour tester le calcul des BB d'une fonction */
+  Function * fct = p2.get_function(0);
+  fct -> comput_basic_block();
+  
+  
+  int size=(int)fct->nbr_BB();
+  for (int i=0; i<size;i++ ){
+    fct -> get_BB(i)->display();
+  }
 
-  */
 
-                /* EXEMPLE DE TEST */
+  /* EXEMPLE DE TEST */
   /* Pour tester le calcul des blocs de bases puis du calcul des BB pred/succ des BB */ 
   
 
