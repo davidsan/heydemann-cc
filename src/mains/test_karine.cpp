@@ -26,11 +26,9 @@ int main(int argc, char ** argv){
   /* Test DU CALCUL DES FONCTIONS */
    /* Calcul des fonctions contenues dans le fichier parsé */
  
-  /*
   p2.comput_function();
   cout << "dans le fichier " << argv[1]  << " nb function : " << p2.nbr_func() << endl;
-  */
-
+    
   /* TEST DU CALCUL DES BB d'une fonction */
   /* Pour tester le calcul des BB d'une fonction */ 
   /* Function * fct = p2.get_function(0);
