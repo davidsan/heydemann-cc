@@ -21,7 +21,7 @@ int main(int argc, char * argv[]){
    remove("tmp/test2.txt");
    remove("./tmp/graph.dot");
    if (argc < 2) {
-      cout << "erreur : pas de fichier assembleur en entrée" << endl;
+      cout << "erreur : pas de fichier assembleur en entree" << endl;
    }	  
    Program prog(argv[1]);
    Function* functmp;
