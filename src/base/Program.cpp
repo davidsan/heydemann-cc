@@ -310,16 +310,19 @@ list<Function*>::iterator Program::function_list_end(){
 void  Program::comput_CFG(){
    list<Function*>::iterator it;
    Function *current;
+   Cfg * cfg;
    it=_myfunc.begin();
    int size=(int)_myfunc.size();
+  
    for(int i=0; i<size; i++){ // parcours des functions du programme
-      current=*it;
-      
-      // A REMPLIR 
-
-
-      it++;
+     current=*it;
+     current->comput_basic_block();
+     current->comput_succ_pred_BB();
+     cfg = new Cfg(current->get_BB(0), current->nbr_BB());
+     _myCFG.push_back(cfg);
+     it++;
    }
+  
    return;
 }
 
