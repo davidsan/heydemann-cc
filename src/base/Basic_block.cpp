@@ -351,7 +351,7 @@ void Basic_block::test(){
    cout << "test du BB " << get_index() << endl;
    display();
 
-   /*
+  
    cout << "nb de successeur : " << get_nb_succ() << endl;
    int nbsucc = get_nb_succ() ;
    if (nbsucc >= 1 && get_successor1())
@@ -366,6 +366,6 @@ void Basic_block::test(){
 	 cout << "pred "<< i <<  " : " << get_predecessor(i)-> get_index() << "; ";
    }
 
-   */
+   
    cout << endl;
 }

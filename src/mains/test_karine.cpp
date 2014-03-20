@@ -19,7 +19,7 @@ int main(int argc, char ** argv){
     return -1;
   }
   Program p2(argv[1]) ;
-  p2.display() ;
+//  p2.display() ;
 
  
 
@@ -31,29 +31,22 @@ int main(int argc, char ** argv){
     
   /* TEST DU CALCUL DES BB d'une fonction */
   /* Pour tester le calcul des BB d'une fonction */
-  Function * fct = p2.get_function(0);
-  fct -> comput_basic_block();
+  // Function * fct = p2.get_function(0);
+  // fct -> comput_basic_block();
   
-  
-  int size=(int)fct->nbr_BB();
-  for (int i=0; i<size;i++ ){
-    fct -> get_BB(i)->display();
-  }
-
 
   /* EXEMPLE DE TEST */
   /* Pour tester le calcul des blocs de bases puis du calcul des BB pred/succ des BB */ 
   
 
-  /* 
+  
 
      Function * fct = p2.get_function(0);
-     fct -> comput_basic_block(); 
-     fct -> comput_succ_pred();
+     fct -> comput_basic_block();
+     fct -> comput_succ_pred_BB();
      fct -> test(); 
 
-  */
-
+  
 
   /* TEST DE LA CONSTRUCTION DES CFG et donc des succ/pred des BB */
   /*  if (p2.nbr_func() > 0){

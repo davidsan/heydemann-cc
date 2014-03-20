@@ -281,23 +281,52 @@ list<Basic_block*>::iterator Function::bb_list_end(){
 // NB : penser  utiliser la méthode set_link_succ_pred(Basic_block *) de la classe Basic_block  
 void Function::comput_succ_pred_BB(){
   
-   list<Basic_block*>::iterator it, it2;
-   Basic_block *current;
-   Instruction *instr;
-   int nbi;
-   Operand* op;
-   
-   Basic_block *succ=NULL;
-   
-   int size= (int) _myBB.size(); // nombre de BB
-   it=_myBB.begin();   //1er BB
-   //remarque : le dernier block n'a pas de successeurs
- 
+  list<Basic_block*>::iterator it, it2;
+  Basic_block *current, *next;
+  Instruction *instr;
+  Operand* op;
+  OPLabel* olb;
+  Basic_block *succ=NULL;
 
-
-   //A REMPLIR
-
-
+  it=_myBB.begin();   //1er BB
+  it2=_myBB.begin();   //2eme BB
+  it2++;
+  //remarque : le dernier block n'a pas de successeurs
+  while (it2 != _myBB.end())
+  {
+    current=*it;
+    next=*it2;
+    Node* branch = current->get_branch();
+    if(branch!=NULL){
+      // cas o y'a un jump ou un branch (1 ou 2 succ)
+      Line* l = branch->get_line();
+      instr = (dynamic_cast <Instruction *> (l));
+      if (instr->is_cond_branch()) {
+        // cas o y'a un branch (2 succ)
+        current->set_successor1(next);
+        next->set_predecessor(current);
+        op = (instr->get_op3());
+        olb = (dynamic_cast <OPLabel *> (op));
+        succ = find_label_BB(olb);
+        current->set_successor2(succ);
+        succ->set_predecessor(current);
+      }else{
+        // cas o y'a un jump (1 succ)
+        op = (instr->get_op1());
+        olb = (dynamic_cast <OPLabel *> (op));
+        succ = find_label_BB(olb);
+        if(succ){
+          current->set_successor1(succ);
+          succ->set_predecessor(current);
+        }
+      }
+    }else{
+      // cas o il n'y a pas de branch / jump (1 succ)
+      current->set_successor1(next); // le BB suivant
+    }
+    it++;
+    it2++;
+  }
 }
 
 
