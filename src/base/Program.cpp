@@ -318,11 +318,10 @@ void  Program::comput_CFG(){
      current=*it;
      current->comput_basic_block();
      current->comput_succ_pred_BB();
-     cfg = new Cfg(current->get_BB(0), current->nbr_BB());
+     cfg = new Cfg(current -> get_BB(0), current->nbr_BB());
      _myCFG.push_back(cfg);
      it++;
    }
-  
    return;
 }
 

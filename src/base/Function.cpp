@@ -26,6 +26,7 @@ Basic_block* Function::get_firstBB(){
 Node* Function::get_end(){
   return _end;
 }
+
 void Function::display(){
   cout<<"Begin Function"<<endl;
   Node* element = _head;
@@ -292,41 +293,42 @@ void Function::comput_succ_pred_BB(){
   it2=_myBB.begin();   //2eme BB
   it2++;
   //remarque : le dernier block n'a pas de successeurs
-  while (it2 != _myBB.end())
-  {
-    current=*it;
-    next=*it2;
-    Node* branch = current->get_branch();
-    if(branch!=NULL){
-      // cas o y'a un jump ou un branch (1 ou 2 succ)
-      Line* l = branch->get_line();
-      instr = (dynamic_cast <Instruction *> (l));
-      if (instr->is_cond_branch()) {
-        // cas o y'a un branch (2 succ)
-        current->set_successor1(next);
+  while (it2!=_myBB.end()) {
+    current = *it;
+    next = *it2;
+    Node * n = (current->get_branch());
+    if (n!=NULL){
+      instr = (dynamic_cast <Instruction *> (n->get_line()));
+    }
+    if (instr != NULL) {
+      if (instr -> get_format() == I) {
         next->set_predecessor(current);
-        op = (instr->get_op3());
-        olb = (dynamic_cast <OPLabel *> (op));
-        succ = find_label_BB(olb);
-        current->set_successor2(succ);
-        succ->set_predecessor(current);
-      }else{
-        // cas o y'a un jump (1 succ)
-        op = (instr->get_op1());
-        olb = (dynamic_cast <OPLabel *> (op));
+        current->set_successor2(next);
+        op=instr -> get_op3();
+        olb=(dynamic_cast <OPLabel *> (op));
         succ = find_label_BB(olb);
         if(succ){
           current->set_successor1(succ);
           succ->set_predecessor(current);
         }
+      }else if(instr -> get_format () == J){
+        op=instr -> get_op1();
+        olb=(dynamic_cast <OPLabel *> (op));
+        succ = find_label_BB(olb);
+        if(succ!=NULL){
+          current -> set_successor1(succ);
+          succ -> set_predecessor(current);
+        }
       }
     }else{
-      // cas o il n'y a pas de branch / jump (1 succ)
-      current->set_successor1(next); // le BB suivant
+      current->set_successor1(next);
+      next->set_predecessor(current);
     }
+    
     it++;
     it2++;
   }
+  
 }
 
 

@@ -55,6 +55,6 @@ int main(int argc, char ** argv){
     Cfg * cfg = p2.get_CFG(p2.nbr_func()>2?2:0);
     cfg -> restitution(NULL,"./tmp/graph2.dot");
   }
-  
+
   return 0;
 }
