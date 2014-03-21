@@ -219,12 +219,12 @@ void Program::in_file(string const filename){
    monflux.close();	
 }
 
-/* Il faut ici délimite les fonctions du fichier assembleur en détectant les directives .ent et .end qui indique le début et la function d'une fonction 
-Il faut donc parcourir toutes les lignes d'un programme et construire avec chaque couple de ligne comportant les directives .ent FCT et .end FCT une nouvelle fonction et l'ajouter à la liste des fonctions du programme
+/* Il faut ici dÃ©limite les fonctions du fichier assembleur en dÃ©tectant les directives .ent et .end qui indique le dÃ©but et la function d'une fonction 
+Il faut donc parcourir toutes les lignes d'un programme et construire avec chaque couple de ligne comportant les directives .ent FCT et .end FCT une nouvelle fonction et l'ajouter Ã  la liste des fonctions du programme
 
 */
 
-/* NB : la méthode get_content() permet de récupérer une chaine de caractère correspondant au contenu d'une ligne/directive/label/instruction. Par exemple :
+/* NB : la mÃ©thode get_content() permet de rÃ©cupÃ©rer une chaine de caractÃ¨re correspondant au contenu d'une ligne/directive/label/instruction. Par exemple :
 
   string ma_chaine = ma_ligne->get_content();
 
@@ -236,20 +236,43 @@ Il faut donc parcourir toutes les lignes d'un programme et construire avec chaqu
 */
 
 void Program::comput_function(){
-   Function *func;
-   Node *element_debut=NULL;
-   Node* current = _head;
-   Line *l=NULL;
-   Directive *d=NULL;
-   string direct;
-
-
-   // A REMPLIR 
-
-
-
-   if (is_empty())	
-      cout<<"The program is empty"<<endl;
+  Function *func;
+  Node *element_debut=NULL;
+  Node* current = _head;
+  Line *l=NULL;
+  Directive *d=NULL;
+  string direct;
+  
+  // parcours des lignes
+  while (current != NULL) {
+    
+    l = current->get_line();
+    // on cherche une directive
+    if(!l->isDirective()){
+      current = current->get_next();
+      continue;
+    }
+    d=(dynamic_cast <Directive *> (l));
+    // qui commence par .ent ou .end
+    direct = d->get_content();
+    if (direct.compare(0, 4, ".ent") == 0) {
+      // dÃ©but de fonction dÃ©tectÃ©
+      element_debut = current;
+    }else if (direct.compare(0, 4, ".end") == 0) {
+      // fin de fonction dÃ©tectÃ©
+      // allocation dune nouvelle fonction
+      func = new Function();
+      // initialisation de la fonction
+      func->set_head(element_debut);
+      func->set_end(current);
+      // insertion dans la liste des fonctions
+      _myfunc.push_back(func);
+    }
+    current = current->get_next();
+  }
+  
+  if (is_empty())
+    cout<<"The program is empty"<<endl;
 }
 
 int Program::nbr_func(){
@@ -277,25 +300,27 @@ list<Function*>::iterator Program::function_list_end(){
 }
 
 
-/* Pour chaque fonction du programme, donc de la liste _myfunc, il faut créer un CFG et l'ajouter à la liste _myCFG ;
-   La création d'un CFG se fait avec un appel au constructeur, par exemple : 
+/* Pour chaque fonction du programme, donc de la liste _myfunc, il faut crÃ©er un CFG et l'ajouter Ã  la liste _myCFG ;
+   La crÃ©ation d'un CFG se fait avec un appel au constructeur, par exemple : 
    Cfg * cfg = new Cfg(bb0, n);
-   crée un CFG dont le BB d'entrée est bb0 et contenant n BBs.
-   Il faut avoir calculé les blocs de base des fonctions et les succ/pred des BB sinon le CFG n'aura qu'un bloc, le premier (meme si on dit qu'il en a n en paramètre)
+   crÃ©e un CFG dont le BB d'entrÃ©e est bb0 et contenant n BBs.
+   Il faut avoir calculÃ© les blocs de base des fonctions et les succ/pred des BB sinon le CFG n'aura qu'un bloc, le premier (meme si on dit qu'il en a n en paramÃ¨tre)
 */
 
 void  Program::comput_CFG(){
    list<Function*>::iterator it;
    Function *current;
+   Cfg * cfg;
    it=_myfunc.begin();
    int size=(int)_myfunc.size();
+  
    for(int i=0; i<size; i++){ // parcours des functions du programme
-      current=*it;
-      
-      // A REMPLIR 
-
-
-      it++;
+     current=*it;
+     current->comput_basic_block();
+     current->comput_succ_pred_BB();
+     cfg = new Cfg(current -> get_BB(0), current->nbr_BB());
+     _myCFG.push_back(cfg);
+     it++;
    }
    return;
 }

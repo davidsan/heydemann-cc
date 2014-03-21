@@ -26,6 +26,7 @@ Basic_block* Function::get_firstBB(){
 Node* Function::get_end(){
   return _end;
 }
+
 void Function::display(){
   cout<<"Begin Function"<<endl;
   Node* element = _head;
@@ -184,21 +185,65 @@ void Function::add_BB(Node *debut, Node* fin, int index){
 }
 
 void Function::comput_basic_block(){
-   Node *debut, *current, *prev;
-   current=_head;
-   debut=_head;
-   prev = NULL;
-   int ind=0;
-   Line *l=NULL;
-   Instruction *i=NULL;
-   
-   cout<< "comput BB" <<endl;
-   cout<<"head :"<<_head->get_lineContent()<<endl;
-   cout<<"tail :"<<_end->get_lineContent()<<endl;
-   
-   // A REMPLIR   
-   
-   cout<<"end comput BB"<<endl;
+  Node *debut, *current, *prev;
+  current=_head;
+  debut=_head;
+  prev = NULL;
+  int ind=0;
+  Line *l=NULL;
+  Instruction *i=NULL;
+  
+  cout<<"comput BB"<<endl;
+  cout<<"head :"<<_head->get_lineContent()<<endl;
+  cout<<"tail :"<<_end->get_lineContent()<<endl;
+  
+  
+  // faire avancer le pointeur current aprs le label de la fonction
+  while(current && current != _end && !current->get_line()->isInst()){
+    current=current->get_next();
+  }
+
+  // parcours des lignes restantes
+  while(current && current != _end){
+    l = current->get_line();
+    if(l->isDirective()){
+      prev = current;
+      current = current->get_next();
+      continue;
+    }
+    if(l->isLabel()){
+      // on teste si c'Žtait pas un jump avant
+      if(debut < current){
+        // le BB s'arrte ˆ la ligne prev
+        add_BB(debut,prev,ind);
+        // on fait commencer le prochain BB au label
+        debut = current;
+        
+        ind++;
+      }
+    }
+    if(l->isInst()){
+      i = (dynamic_cast <Instruction *> (l));
+      if(i->get_type() == BR){
+        // instruction de type t_Type.BR
+        add_BB(debut,current->get_next(),ind);
+        get_BB(nbr_BB()-1)->set_branch(current);
+        debut=current->get_next()->get_next();
+        ind++;
+        // on zappe dŽjˆ le prochain
+        prev = current;
+        current = current->get_next();
+        if(current == NULL){ // ne devrait pas se produire
+          break;
+        }
+      }
+    }
+    prev = current;
+    current = current->get_next();
+  }
+  // set the last BB's end to the end
+  get_BB(nbr_BB()-1)->set_end(_end);
+  cout<<"end comput BB"<<endl;
 }
 
 int Function::nbr_BB(){
@@ -237,23 +282,53 @@ list<Basic_block*>::iterator Function::bb_list_end(){
 // NB : penser  utiliser la méthode set_link_succ_pred(Basic_block *) de la classe Basic_block  
 void Function::comput_succ_pred_BB(){
   
-   list<Basic_block*>::iterator it, it2;
-   Basic_block *current;
-   Instruction *instr;
-   int nbi;
-   Operand* op;
-   
-   Basic_block *succ=NULL;
-   
-   int size= (int) _myBB.size(); // nombre de BB
-   it=_myBB.begin();   //1er BB
-   //remarque : le dernier block n'a pas de successeurs
- 
+  list<Basic_block*>::iterator it, it2;
+  Basic_block *current, *next;
+  Instruction *instr;
+  Operand* op;
+  OPLabel* olb;
+  Basic_block *succ=NULL;
 
-
-   //A REMPLIR
-
-
+  it=_myBB.begin();   //1er BB
+  it2=_myBB.begin();   //2eme BB
+  it2++;
+  //remarque : le dernier block n'a pas de successeurs
+  while (it2!=_myBB.end()) {
+    current = *it;
+    next = *it2;
+    Node * n = (current->get_branch());
+    if (n!=NULL){
+      instr = (dynamic_cast <Instruction *> (n->get_line()));
+    }
+    if (instr != NULL) {
+      if (instr -> get_format() == I) {
+        next->set_predecessor(current);
+        current->set_successor2(next);
+        op=instr -> get_op3();
+        olb=(dynamic_cast <OPLabel *> (op));
+        succ = find_label_BB(olb);
+        if(succ){
+          current->set_successor1(succ);
+          succ->set_predecessor(current);
+        }
+      }else if(instr -> get_format () == J){
+        op=instr -> get_op1();
+        olb=(dynamic_cast <OPLabel *> (op));
+        succ = find_label_BB(olb);
+        if(succ!=NULL){
+          current -> set_successor1(succ);
+          succ -> set_predecessor(current);
+        }
+      }
+    }else{
+      current->set_successor1(next);
+      next->set_predecessor(current);
+    }
+    
+    it++;
+    it2++;
+  }
+  
 }
 
 
