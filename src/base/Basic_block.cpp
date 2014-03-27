@@ -306,7 +306,7 @@ void Basic_block::comput_pred_succ_dep(){
   link_instructions();
   Instruction *i_current=this->get_last_instruction();
   Instruction *i_previous = i_current->get_prev();
-  Instruction *itmp;
+  Instruction *itmp = NULL;
   
   /*il faut faire ce qu'il faut pour remplir les listes
    
@@ -324,7 +324,6 @@ void Basic_block::comput_pred_succ_dep(){
       t_Dep dep=i_current->is_dependant(itmp);
       if(dep != NONE){
         add_dep_link(i_previous, i_current, dep);
-        //   break;
       }
       itmp = itmp->get_prev();
     }
