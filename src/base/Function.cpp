@@ -1,4 +1,4 @@
-#include <Function.h>
+ï»¿#include <Function.h>
 
 Function::Function(){
   _head = NULL;
@@ -162,7 +162,7 @@ Basic_block *Function::find_label_BB(OPLabel* label){
   return NULL;
 }
 
-//Calcule la liste des blocs de base : il faut délimiter les BB, en parcourant la liste des lignes/instructions à partir de la premiere, il faut s'arreter à chaque branchement (et prendre en compte le delayed slot qui appartient au meme BB, c'est l'instruction qui suit tout branchement) car il indique la fin d'un BB/une entete qui est l'instruction qui suit l'instruction du delayed slot ou à chaque label (on estime que tout label est utilisé par un saut et donc un label correspond correspond à une entete de BB).
+//Calcule la liste des blocs de base : il faut dÃ©limiter les BB, en parcourant la liste des lignes/instructions Ã  partir de la premiere, il faut s'arreter Ã  chaque branchement (et prendre en compte le delayed slot qui appartient au meme BB, c'est l'instruction qui suit tout branchement) car il indique la fin d'un BB/une entete qui est l'instruction qui suit l'instruction du delayed slot ou Ã  chaque label (on estime que tout label est utilisÃ© par un saut et donc un label correspond correspond Ã  une entete de BB).
 //exemple 
 /*
 etiq:  <- etiquette => prochaine instruction est une entete
@@ -170,7 +170,7 @@ etiq:  <- etiquette => prochaine instruction est une entete
    i2
    i3
    saut
-   i4   <- appartient au même BB que 'saut'
+   i4   <- appartient au mÃªme BB que 'saut'
    i5   <- i5 est une entete
    ...
 
@@ -198,7 +198,7 @@ void Function::comput_basic_block(){
   cout<<"tail :"<<_end->get_lineContent()<<endl;
   
   
-  // faire avancer le pointeur current aprs le label de la fonction
+  // faire avancer le pointeur current aprÂs le label de la fonction
   while(current && current != _end && !current->get_line()->isInst()){
     current=current->get_next();
   }
@@ -212,9 +212,9 @@ void Function::comput_basic_block(){
       continue;
     }
     if(l->isLabel()){
-      // on teste si c'Žtait pas un jump avant
+      // on teste si c'ÂŽtait pas un jump avant
       if(debut < current){
-        // le BB s'arrte ˆ la ligne prev
+        // le BB s'arrÂte Âˆ la ligne prev
         add_BB(debut,prev,ind);
         // on fait commencer le prochain BB au label
         debut = current;
@@ -230,7 +230,7 @@ void Function::comput_basic_block(){
         get_BB(nbr_BB()-1)->set_branch(current);
         debut=current->get_next()->get_next();
         ind++;
-        // on zappe dŽjˆ le prochain
+        // on zappe dÂŽjÂˆ le prochain
         prev = current;
         current = current->get_next();
         if(current == NULL){ // ne devrait pas se produire
@@ -272,14 +272,14 @@ list<Basic_block*>::iterator Function::bb_list_end(){
    return _myBB.end();
 }
 
-/* comput_pred_succ calcule les successeurs et prédécesseur des BB, pour cela il faut commencer par les successeurs */
-/* et itérer sur tous les BB d'une fonction */
-/* il faut determiner si un BB a un ou deux successeurs : dépend de si le BB termine avec un saut */
+/* comput_pred_succ calcule les successeurs et prÃ©dÃ©cesseur des BB, pour cela il faut commencer par les successeurs */
+/* et itÃ©rer sur tous les BB d'une fonction */
+/* il faut determiner si un BB a un ou deux successeurs : dÃ©pend de si le BB termine avec un saut */
 /* si pas de saut ou si saut incontionnel : 1 successeur */
-/* si branchement conditionnel : 2 successeurs, il faut trouver le BB cible de saut à partir de l'etiquette */ 
+/* si branchement conditionnel : 2 successeurs, il faut trouver le BB cible de saut Ã  partir de l'etiquette */ 
 
 
-// NB : penser  utiliser la méthode set_link_succ_pred(Basic_block *) de la classe Basic_block  
+// NB : penser  utiliser la mÃ©thode set_link_succ_pred(Basic_block *) de la classe Basic_block  
 void Function::comput_succ_pred_BB(){
   
   list<Basic_block*>::iterator it, it2;
@@ -334,7 +334,7 @@ void Function::comput_succ_pred_BB(){
 
 
 
-/* en implementant la fonction test de la classe BB, permet de tester des choses sur tous les blocs de base d'une fonction par exemple l'affichage de tous les BB d'une fonction ou l'affichage des succ/pred des BBs comme c'est le cas -- voir la classe Basic_block et la méthode test */
+/* en implementant la fonction test de la classe BB, permet de tester des choses sur tous les blocs de base d'une fonction par exemple l'affichage de tous les BB d'une fonction ou l'affichage des succ/pred des BBs comme c'est le cas -- voir la classe Basic_block et la mÃ©thode test */
 
 void Function::test(){
    int size=(int)_myBB.size();

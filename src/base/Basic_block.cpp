@@ -1,4 +1,4 @@
-#include <Basic_block.h>
+ï»¿#include <Basic_block.h>
 
 
 //static
@@ -286,7 +286,7 @@ void Basic_block::link_instructions(){
    _nb_instr = index;
 }
 
-/* ajoute une dépendance dans la liste des dépendances des 2 instructions */
+/* ajoute une dÃ©pendance dans la liste des dÃ©pendances des 2 instructions */
 void add_dep_link(Instruction *pred, Instruction* succ, t_Dep type){
    dep *d;
    d=(dep*)malloc(sizeof(dep));
@@ -310,11 +310,11 @@ void Basic_block::comput_pred_succ_dep(){
   
   /*il faut faire ce qu'il faut pour remplir les listes
    
-   list <dep*> _succ_dep; // instructions qui dépendent de this avec type de dep
+   list <dep*> _succ_dep; // instructions qui dÃ©pendent de this avec type de dep
    list <dep*> _pred_dep; // instructions dont depend this avec type de dep
    de la classe Instruction pour chacune des instructions du BB
    
-   NB : la fonction add_dep_link ci-dessus peut vous être utile...
+   NB : la fonction add_dep_link ci-dessus peut vous Ãªtre utile...
    
    */
   
@@ -334,7 +334,7 @@ void Basic_block::comput_pred_succ_dep(){
   }
   
   //il faut  rattacher toute les instructions sans successeurs(dependances)
-  //au saut de fin de BB par une dépendance de controle si le BB se termine par un saut
+  //au saut de fin de BB par une dÃ©pendance de controle si le BB se termine par un saut
   i_previous = this->get_first_instruction();
   i_current = i_previous->get_next();
   Node * n_branch = get_branch();
@@ -376,7 +376,7 @@ int Basic_block::nb_cycles(){
 
 
 
-/* permet de tester des choses sur un bloc de base, par exemple permet d'afficher les BB successeurs et prédécesseurs (commentaire),  là ne fait rien qu'afficher le BB */
+/* permet de tester des choses sur un bloc de base, par exemple permet d'afficher les BB successeurs et prÃ©dÃ©cesseurs (commentaire),  lÃ  ne fait rien qu'afficher le BB */
 void Basic_block::test(){
    cout << "test du BB " << get_index() << endl;
    display();

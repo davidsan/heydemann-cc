@@ -1,4 +1,4 @@
-#include <Label.h>
+﻿#include <Label.h>
 
 Label::Label( string lab){
 	_line= lab;

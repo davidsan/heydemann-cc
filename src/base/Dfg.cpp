@@ -1,6 +1,6 @@
-#include <Dfg.h>
+ï»¿#include <Dfg.h>
 
-// crée un arc et le renvoie
+// crÃ©e un arc et le renvoie
 Arc_t* new_arc(int del, t_Dep d, Node_dfg *n){
    Arc_t *arc = new Arc_t;
    arc->delai=del;
@@ -10,7 +10,7 @@ Arc_t* new_arc(int del, t_Dep d, Node_dfg *n){
    return arc;
 }
 
-//rend le delay entre 2 instructions pour la dépendance donnée
+//rend le delay entre 2 instructions pour la dÃ©pendance donnÃ©e
 int get_delay(t_Dep dep, Instruction *from, Instruction *to){
    switch(dep){
    case WAW:
@@ -54,7 +54,7 @@ Dfg::Dfg(Basic_block *bb){
   
 }
 
-// methode auxiliaire pour la construction du Dfg, pas forcément utile, dépend de comment vous envisagez de faire...
+// methode auxiliaire pour la construction du Dfg, pas forcÃ©ment utile, dÃ©pend de comment vous envisagez de faire...
 void Dfg::build_dfg(Node_dfg*,bool) {
 
   // A REMPLIR OU NON !
@@ -109,7 +109,7 @@ void Dfg::display(Node_dfg * node, bool first){
 				     ((x==MEMDEP)?"mem": "control")))))
 
 
-//Pour générer le fichier .dot: dot -Tps graph.dot -o graph.ps
+//Pour gÃ©nÃ©rer le fichier .dot: dot -Tps graph.dot -o graph.ps
 void Dfg::restitute(Node_dfg * node, string const filename, bool first){
    if(first)
       remove(filename.c_str());

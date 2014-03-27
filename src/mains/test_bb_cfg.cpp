@@ -1,16 +1,16 @@
-#include <iostream>
+ï»¿#include <iostream>
 #include <Program.h>
 #include <Basic_block.h>
 #include <Function.h>
 
 
 /*
-  ##################Programme à appeler avec le nom d'un fichier assembleur en argument###############
+  ##################Programme Ã  appeler avec le nom d'un fichier assembleur en argument###############
 
   -Affichage du nombre de lignes du programme, de son contenu
-  - Découpage en fonctions et affichage du nombre de fonction
-  - Découpage en nombre de bloc de base
-  -Pour chaque fonction, calcul du decoupage en blocs de base, des successeurs et prédécesseurs des BB, construction et restitution en fichier .dot du CFG
+  - DÃ©coupage en fonctions et affichage du nombre de fonction
+  - DÃ©coupage en nombre de bloc de base
+  -Pour chaque fonction, calcul du decoupage en blocs de base, des successeurs et prÃ©dÃ©cesseurs des BB, construction et restitution en fichier .dot du CFG
   -Affichage du BB0 de la fonction0
 
 */

@@ -1,4 +1,4 @@
-#include <Cfg.h>
+Ôªø#include <Cfg.h>
 
 Cfg::Cfg(Basic_block * BB, int size){
 	_head = BB;
@@ -16,14 +16,14 @@ Basic_block *Cfg::get_head(){
 //Donner Null en parametre de la fonction lors de son appel
 void Cfg::display(Basic_block *BB){
 
-   //Si on entre dans la fonction pour la premiËre fois le bloc de base  sera la tete du cfg  
+   //Si on entre dans la fonction pour la premi√®re fois le bloc de base  sera la tete du cfg  
    if(BB == NULL)	{
       BB = _head;
       for(int i=0; i<_length; i++)
 	 _read[i]=0;		
    }
 
-   //Si le bloc b'as pas encore ÈtÈ lu (pour eviter les boucle infini)
+   //Si le bloc b'as pas encore √©t√© lu (pour eviter les boucle infini)
    if(!_read[BB->get_index()]){
       //On le marque comme lu
       _read[BB->get_index()]=1;
@@ -89,7 +89,7 @@ void Cfg::restitution(Basic_block *BB, string const filename){
 		      restitution(BB->get_successor2(), filename);
 		  }
 
-		  //lecture du fichier pour savoir s'il y a dÈj‡ un parenthese de fin
+		  //lecture du fichier pour savoir s'il y a d√©j√† un parenthese de fin
 		  ifstream fichier(filename.c_str());
 		  if(fichier){
        

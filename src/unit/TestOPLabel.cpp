@@ -1,4 +1,4 @@
-//#include <cppunit/TestRunner.h>
+﻿//#include <cppunit/TestRunner.h>
 //#include <cppunit/TestResult.h>
 #include <cppunit/extensions/HelperMacros.h>
 #include <iostream>

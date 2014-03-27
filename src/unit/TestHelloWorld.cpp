@@ -1,4 +1,4 @@
-//--- Hello, World! for CppUnit
+﻿//--- Hello, World! for CppUnit
 
 #include <iostream>
 

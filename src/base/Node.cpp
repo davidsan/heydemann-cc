@@ -1,4 +1,4 @@
-#include <Node.h>
+﻿#include <Node.h>
 
 Node::Node(Line * content){
 	_content= content;
