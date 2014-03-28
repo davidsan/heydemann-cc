@@ -37,8 +37,8 @@ int get_delay(t_Dep dep, Instruction *from, Instruction *to){
 Dfg::Dfg(Basic_block *bb){
   
   list<Arc_t*>::iterator ita;
-  
-  
+  list<Node_dfg*>::iterator itn;
+
   _bb=bb;
   _index_branch=-1;
   _nb_arc=0;
@@ -46,12 +46,53 @@ Dfg::Dfg(Basic_block *bb){
   _read= new int[_length];
   
   bb->comput_pred_succ_dep();
-  
-  //
-  
-  
-  // A COMPLETER
-  
+
+  // Création des noeuds DFG dans la liste list_node_dfg
+  for (int i = 0; i < _length; i++) {
+      Instruction* inst = bb->get_instruction_at_index(i);
+      Node_dfg* nouveau = new Node_dfg(inst);
+      list_node_dfg.push_back(nouveau);
+      if(inst->is_branch()){
+          _index_branch = i;
+      }
+  }
+
+
+  for (itn = list_node_dfg.begin(); itn != list_node_dfg.end(); itn++){
+      Node_dfg * courant = *itn;
+      Instruction * inst = courant->get_instruction();
+      // le noeud courant est une racine
+      if(inst->get_nb_pred() == 0 && !inst->is_branch()){
+          _roots.push_back(courant);
+      }
+      // le noeud courant est une branche (donc le noeud qui suit est un delayed slot)
+      if(inst->is_branch()){
+          _delayed_slot.push_back(*(++itn));
+          break;
+      }
+
+      // parcours des successeurs
+      list<dep*>::iterator its;
+      for(its = inst->succ_begin(); its != inst->succ_end(); its++) {
+          // trouver le noeud DFG correspondant au succ
+          Instruction * inst_successeur = (*its)->inst;
+          list<Node_dfg*>::iterator itn2;
+          Node_dfg * noeud_dfg_succ = NULL;
+          for (itn2 = list_node_dfg.begin(); itn2 != list_node_dfg.end(); itn2++){
+              noeud_dfg_succ = *itn2;
+              if(noeud_dfg_succ->get_instruction() == inst_successeur){
+                  break;
+              }
+          }
+          // calcul du delai
+          int delay = get_delay((*its)->type, inst, noeud_dfg_succ->get_instruction());
+
+          // ajout de l'arc
+          courant->add_arc(new_arc(delay,(*its)->type,noeud_dfg_succ));
+          noeud_dfg_succ->add_predecesseur(courant);
+          _nb_arc++;
+      }
+  }
 }
 
 // methode auxiliaire pour la construction du Dfg, pas forcément utile, dépend de comment vous envisagez de faire...
@@ -200,10 +241,112 @@ bool contains(list<Node_dfg*>* l, Node_dfg* n){
    return false;
 }
 
+
+list<Node_dfg*> Dfg::reverse_topological_order() {
+    list<Node_dfg*>::iterator it;
+    list<Arc_t*>::iterator ita;
+    list<Node_dfg*> l;
+    list<Node_dfg*> res;
+
+    Node_dfg* current;
+    for(it=list_node_dfg.begin(); it!=list_node_dfg.end(); it++){
+        current = *it;
+        // noeud initiailisé sans successeur
+        if(current->get_nb_arcs() == 0){
+            l.push_back(current);
+            // marque comme traité
+            _read[current->get_instruction()->get_index()]=1;
+            res.push_back(current);
+        }else{
+            // marque comme non traité
+            _read[current->get_instruction()->get_index()]=0;
+        }
+    }
+
+    while(!l.empty()){
+        current = l.front();
+        l.pop_front();
+        bool ready = true;
+
+        // parcours des successeurs
+        for(ita=current->arcs_begin(); ita!=current->arcs_end(); ita++){
+            Arc_t* arc = *ita;
+
+            // si successeur non traité (_read[])
+            if(_read[arc->next->get_instruction()->get_index()] == 0){
+                // traitement des successeurs
+                ready = false;
+                l.push_front(current);
+                l.push_front(arc->next);
+                break;
+            }
+
+        }
+        // ajout des predecesseurs
+        if(ready){
+
+            res.push_back(current);
+            _read[current->get_instruction()->get_index()] = 1;
+
+            for(it=current->pred_begin(); it!=current->pred_end(); it++){
+                Node_dfg* predecesseur = *it;
+                if(_read[predecesseur->get_instruction()->get_index()] == 0){
+                    l.push_back(predecesseur);
+                }
+            }
+
+        }
+
+    }
+    return res;
+
+}
 //A FAIRE
 void Dfg::comput_critical_path(){
 
+    list<Node_dfg*>::iterator it;
+    list<Arc_t*>::iterator ita;
 
+    it=list_node_dfg.begin();
+    list<Node_dfg*> lrev = reverse_topological_order();
+    Node_dfg* node;
+
+    /*
+     * for all noeud (i)
+     *      node(i).weight = 0
+     */
+    for(it=list_node_dfg.begin(); it!=list_node_dfg.end(); it ++){
+        node = *it;
+        node->set_weight(0);
+    }
+
+    /* for all noeud (i) in topological post order */
+    for(it=lrev.begin(); it!=lrev.end(); it++){
+        node = *it;
+        /* if leaf(node(i)) then */
+        if(node->get_nb_arcs()==0){
+            /* node(i).weight = ExecTime(i) */
+            node->set_weight(node->get_instruction()->get_latency());
+        }else{
+            /*
+            *      for all node(j) in succ(node(i))
+            *          node(i).weight
+            *           = max(node(i).weight,
+            *                 delai(node(i),node(j)) +
+            *                  node(j).weight)
+            *
+            */
+            for(ita=node->arcs_begin(); ita!=node->arcs_end(); ita++){
+                Arc_t * arc=*ita;
+                int delay = arc->delai + arc->next->get_weight();
+                if(delay > node->get_weight()){
+                    node->set_weight(delay);
+                }
+            }
+        }
+
+
+    }
 
 #ifdef DEBUG
   it=list_node_dfg.begin();
@@ -216,22 +359,25 @@ void Dfg::comput_critical_path(){
 
 
 
+/*
+ * comput_critical_path()
+ * criticalpath=0;
+ * for all node in _roots
+ *   criticalpath = max (criticalpath,
+ *              node.weight);
+ */
 // A FAIRE
-int Dfg::get_critical_path(){}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+int Dfg::get_critical_path(){
+    int criticalpath=0;
+    list<Node_dfg*>::iterator it;
+    comput_critical_path();
+    for(it=_roots.begin(); it!=_roots.end(); it++){
+        if(criticalpath < (*it)->get_weight()){
+            criticalpath=(*it)->get_weight();
+        }
+    }
+    return criticalpath;
+}
 
 void  Dfg::scheduling(){
 }
