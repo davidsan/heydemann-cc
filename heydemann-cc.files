@@ -8793,13 +8793,16 @@ include/OPRegister.h
 include/Program.h
 include/TestOPLabel.h
 include/utl200.h
+obj/parsing/asm_mipsyac.o.c
 src/base/Basic_block.cpp
 src/base/Cfg.cpp
+src/base/Dfg.cpp
 src/base/Directive.cpp
 src/base/Function.cpp
 src/base/Instruction.cpp
 src/base/Label.cpp
 src/base/Node.cpp
+src/base/Node_dfg.cpp
 src/base/OPExpression.cpp
 src/base/OPImmediate.cpp
 src/base/OPLabel.cpp
@@ -8811,6 +8814,7 @@ src/examples/test_asm3.c
 src/mains/main.cpp
 src/mains/test_bb_cfg.cpp
 src/mains/test_karine.cpp
+src/mains/test_karine_dfg.cpp
 src/parsing/asm/asm_addasiss.c
 src/parsing/asm/asm_addasobj.c
 src/parsing/asm/asm_addmemtab.c
@@ -8944,5 +8948,3 @@ src/parsing/asm_mipsyac.c
 src/parsing/asm_mipsyac.cpp
 src/unit/TestHelloWorld.cpp
 src/unit/TestOPLabel.cpp
-src/base/Dfg.cpp
-src/base/Node_dfg.cpp
