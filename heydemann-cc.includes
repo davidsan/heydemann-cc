@@ -1,0 +1,4 @@
+include
+include/boost
+include/boost/python/detail
+include/boost/tr1/tr1/bcc32

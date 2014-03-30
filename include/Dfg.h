@@ -69,6 +69,9 @@ public:
 */
 	void scheduling();
 
+    /**	\brief	sort the nodes of the Dfg in reverse topological order
+*/
+    list <Node_dfg*> reverse_topological_order();
 
 /**	\brief	returns the highest weigth of nodes
 */
