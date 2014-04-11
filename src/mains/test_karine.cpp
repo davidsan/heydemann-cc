@@ -25,7 +25,6 @@ int main(int argc, char ** argv){
   
   /* Test DU CALCUL DES FONCTIONS */
   /* Calcul des fonctions contenues dans le fichier parsé */
-  
   p2.comput_function();
   cout << "dans le fichier " << argv[1]  << " nb function : " << p2.nbr_func() << endl;
   
@@ -41,20 +40,20 @@ int main(int argc, char ** argv){
   
   
   
-//  Function * fct = p2.get_function(0);
-//  fct -> comput_basic_block();
-//  fct -> comput_succ_pred_BB();
-//  fct -> test();
+  Function * fct = p2.get_function(2);
+  fct -> comput_basic_block();
+  fct -> comput_succ_pred_BB();
+  fct -> test();
   
   
   
   /* TEST DE LA CONSTRUCTION DES CFG et donc des succ/pred des BB */
-  if (p2.nbr_func() > 2){
-    p2.get_function(2)->display();
-    p2.comput_CFG();
-    Cfg * cfg = p2.get_CFG(p2.nbr_func()>2?2:0);
-    cfg -> restitution(NULL,"./tmp/graph2.dot");
-  }
+//  if (p2.nbr_func() > 2){
+//    p2.get_function(2)->display();
+//    p2.comput_CFG();
+//    Cfg * cfg = p2.get_CFG(p2.nbr_func()>2?2:0);
+//    cfg -> restitution(NULL,"./tmp/graph2.dot");
+//  }
 
   return 0;
 }

@@ -194,9 +194,9 @@ void Function::comput_basic_block(){
   Instruction *i=NULL;
   
   cout<<"comput BB"<<endl;
+
   cout<<"head :"<<_head->get_lineContent()<<endl;
   cout<<"tail :"<<_end->get_lineContent()<<endl;
-  
   
   // faire avancer le pointeur current aprs le label de la fonction
   while(current && current != _end && !current->get_line()->isInst()){
@@ -241,8 +241,15 @@ void Function::comput_basic_block(){
     prev = current;
     current = current->get_next();
   }
+
+  // si le dernier BB ajouté n'est pas celui qui commence par début
+  // alors il faut ajouter un BB qui se termine jusqu'à la fin
+  if(get_BB(nbr_BB()-1)->get_head() != debut){
+      add_BB(debut, _end, ind);
+  }
+
   // set the last BB's end to the end
-  get_BB(nbr_BB()-1)->set_end(_end);
+  //get_BB(nbr_BB()-1)->set_end(_end);
   cout<<"end comput BB"<<endl;
 }
 
