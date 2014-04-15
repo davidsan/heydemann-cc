@@ -1,4 +1,4 @@
-﻿#include <Dfg.h>
+#include <Dfg.h>
 
 // crée un arc et le renvoie
 Arc_t* new_arc(int del, t_Dep d, Node_dfg *n){
@@ -26,10 +26,9 @@ int get_delay(t_Dep dep, Instruction *from, Instruction *to){
    case RAW:
       int ret=t_delay[from->get_type()][to->get_type()];
       if(ret<1)
-	 return 1;
+        return 1;
       return ret;
    }
-   
    return 0;
 }
 
@@ -344,8 +343,6 @@ void Dfg::comput_critical_path(){
                 }
             }
         }
-
-
     }
 
 #ifdef DEBUG
@@ -380,6 +377,9 @@ int Dfg::get_critical_path(){
 }
 
 void  Dfg::scheduling(){
+
+
+
 }
 
 void Dfg::display_sheduled_instr(){

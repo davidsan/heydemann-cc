@@ -366,12 +366,20 @@ bool Basic_block::is_delayed_slot(Instruction *i){
    int j = (dynamic_cast<Instruction *> (get_branch()->get_line()))->get_index();
    // cout << "index saut : " << j << " index instruction " << i-> get_index() << endl;
    return (j < i-> get_index());
-
 }
 
 
 int Basic_block::nb_cycles(){
-   return 0;
+    int result = 0;
+    Node* courant = get_head();
+    Node* end = get_end();
+    Node* next;
+    while( courant != end ){
+         next = courant->get_next();
+         result += t_delay[courant->get_line()->get_type()][next->get_line()->get_type()];
+         courant = next;
+    }
+    return result;
 }
 
 
