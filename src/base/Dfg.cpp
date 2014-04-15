@@ -377,9 +377,64 @@ int Dfg::get_critical_path(){
 }
 
 void  Dfg::scheduling(){
+    list<Node_dfg*> prets;
+    list<Node_dfg*>::iterator it;
+    for(it=_roots.begin(); it!=_roots.end(); it ++){
+        prets.push_back(it*);
+    }
+    while(){
+        prets.sort(compare_instructionFirst);
+        prets.sort(compare_descendant);
+        prets.sort(compare_successeurs);
+        prets.sort(compare_latency);
+        prets.sort(compare_weight);
+        prets.sort(compare_cycle_gel);
+        Node_dfg* n = prets.pop_front(); //problem
+        new_order.push_back(n);
+        for (int var = 0; var < n->get_nb_arcs(); ++var) {
+            Arc_t* a = n->get_arc(i);
+            Node_dfg* succ = a->next;
+            if (!contains(prets,succ) && succ != n){ //si il est deja pret on fait rien
+                new_order.push_back(succ);
+            }
+        }
+    }
+}
 
+bool compare_cycle_gel(const Node_dfg& first, const Node_dfg& second){
+    if (is_frozen_cycle(first)) {
+       return false;
+    }else{
+        if(!is_frozen_cycle(second)){
+           return false;
+        }else{
+           return true;
+        }
+    }
+}
 
+bool is_frozen_cylcle(const Node_dfg& node){
+    return true;
+}
 
+bool compare_weight(const Node_dfg& first, const Node_dfg& second){
+   return (first->get_weight() < second->get_weight());
+}
+
+bool compare_latency(const Node_dfg& first, const Node_dfg& second){
+   return (first->get_instruction()->get_latency() < second->get_instruction()->get_latency());
+}
+
+bool compare_successeurs(const Node_dfg& first, const Node_dfg& second){
+   return (first->get_nb_arcs() < second->get_nb_arcs());
+}
+
+bool compare_descendant(const Node_dfg& first, const Node_dfg& second){
+   return (first->get_nb_descendant() < second->get_nb_descendant());
+}
+
+bool compare_instructionFirst(const Node_dfg& first, const Node_dfg& second){
+    return (first->get_instruction()->get_index() < second->get_instruction()->get_index());
 }
 
 void Dfg::display_sheduled_instr(){
