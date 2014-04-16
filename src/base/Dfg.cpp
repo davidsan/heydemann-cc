@@ -376,72 +376,114 @@ int Dfg::get_critical_path(){
     return criticalpath;
 }
 
-void  Dfg::scheduling(){
+/**
+ * @brief The sortFrozen class type functor
+ */
+struct sortFrozen {
+  std::list<Node_dfg*> & new_order;
+  sortFrozen(std::list<Node_dfg*> & new_order) : new_order(new_order) { }
+  bool operator()(Node_dfg* first, Node_dfg* second){
+      return nrof_frozen_cycle(first) < nrof_frozen_cycle(second);
+  }
+  int nrof_frozen_cycle(Node_dfg* np){
+      int res = 0;
+      // taille de new_order = size = index de l'inst à ajouter
+      int size = new_order.size();
+      int i = 0;
+      list<Node_dfg*>::iterator it_dfg;
+      list<Arc_t*>::iterator ita;
+      // parcours de ttes les inst dans new_order
+      for(it_dfg=new_order.begin(); it_dfg!=new_order.end(); it_dfg ++){
+          // parcours de chaque arc (successeurs)
+          for(ita=(*it_dfg)->arcs_begin(); ita!=(*it_dfg)->arcs_end(); ita ++){
+              Arc_t* a = *ita;
+              // si pointe vers np
+              if(a->next == np){
+                  int delai_lama = size - i;
+                  // si le delai est > à size - i
+                  if(a->delai > delai_lama){
+                      // mettre à jour le delai (res) avec un max
+                      res=max(res, a->delai);
+                  }
+              }
+          }
+          i++;
+      }
+      // retourner le délai calculé (res)
+      return res;
+  }
+};
+
+bool compare_weight(Node_dfg* first, Node_dfg* second){
+   return (first->get_weight() < second->get_weight());
+}
+
+bool compare_latency(Node_dfg* first, Node_dfg* second){
+   return (first->get_instruction()->get_latency() < second->get_instruction()->get_latency());
+}
+
+bool compare_successeurs(Node_dfg* first, Node_dfg* second){
+   return (first->get_nb_arcs() < second->get_nb_arcs());
+}
+
+bool compare_descendant(Node_dfg* first, Node_dfg* second){
+   return (first->get_nb_descendant() < second->get_nb_descendant());
+}
+
+bool compare_instructionFirst(Node_dfg* first, Node_dfg* second){
+    return (first->get_instruction()->get_index() < second->get_instruction()->get_index());
+}
+
+
+void Dfg::scheduling(){
     list<Node_dfg*> prets;
     list<Node_dfg*>::iterator it;
     for(it=_roots.begin(); it!=_roots.end(); it ++){
-        prets.push_back(it*);
+        prets.push_back(*it);
     }
-    while(){
+    while(prets.size() > 0){
         prets.sort(compare_instructionFirst);
         prets.sort(compare_descendant);
         prets.sort(compare_successeurs);
         prets.sort(compare_latency);
         prets.sort(compare_weight);
-        prets.sort(compare_cycle_gel);
-        Node_dfg* n = prets.pop_front(); //problem
+        prets.sort(sortFrozen(new_order));
+        Node_dfg* n = prets.front();
+        prets.pop_front();
         new_order.push_back(n);
-        for (int var = 0; var < n->get_nb_arcs(); ++var) {
+        for (int i = 0; i < n->get_nb_arcs(); i++) {
             Arc_t* a = n->get_arc(i);
             Node_dfg* succ = a->next;
-            if (!contains(prets,succ) && succ != n){ //si il est deja pret on fait rien
-                new_order.push_back(succ);
+            if (!contains(&prets,succ) && succ != n){ //si il est deja pret on fait rien
+                prets.push_back(succ);
             }
         }
     }
 }
 
-bool compare_cycle_gel(const Node_dfg& first, const Node_dfg& second){
-    if (is_frozen_cycle(first)) {
-       return false;
-    }else{
-        if(!is_frozen_cycle(second)){
-           return false;
-        }else{
-           return true;
-        }
+
+int nb_cycles(list<Node_dfg*> l){
+    int result = 0;
+    list <Node_dfg*>::iterator it;
+    for(it=l.begin(); boost::next(it)!=l.end(); it++){
+        Node_dfg* current = *it;
+        Node_dfg* next = *(boost::next(it));
+        result += min(1, t_delay[current->get_instruction()->get_type()][next->get_instruction()->get_type()]);
     }
-}
-
-bool is_frozen_cylcle(const Node_dfg& node){
-    return true;
-}
-
-bool compare_weight(const Node_dfg& first, const Node_dfg& second){
-   return (first->get_weight() < second->get_weight());
-}
-
-bool compare_latency(const Node_dfg& first, const Node_dfg& second){
-   return (first->get_instruction()->get_latency() < second->get_instruction()->get_latency());
-}
-
-bool compare_successeurs(const Node_dfg& first, const Node_dfg& second){
-   return (first->get_nb_arcs() < second->get_nb_arcs());
-}
-
-bool compare_descendant(const Node_dfg& first, const Node_dfg& second){
-   return (first->get_nb_descendant() < second->get_nb_descendant());
-}
-
-bool compare_instructionFirst(const Node_dfg& first, const Node_dfg& second){
-    return (first->get_instruction()->get_index() < second->get_instruction()->get_index());
+    return result;
 }
 
 void Dfg::display_sheduled_instr(){
    list <Node_dfg*>::iterator it;
    Instruction *inst;
+   cout<<"displaying scheduled instr"<<endl;
    for(it=new_order.begin(); it!=new_order.end(); it++){
       inst=(*it)->get_instruction();
       cout<<"i"<<inst->get_index()<<": "<<inst->get_content()<<endl;
    }
+
+   cout << "nb cycles normal : " << nb_cycles(list_node_dfg)<< endl;
+   cout << "nb cycles ordonnancé : " << nb_cycles(new_order)<< endl;
 }
+
+

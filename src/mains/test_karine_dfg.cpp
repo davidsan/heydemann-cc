@@ -16,12 +16,14 @@ int main(int argc, char ** argv){
 	fct -> comput_basic_block();
 	fct -> comput_label();
 	fct -> comput_succ_pred_BB();
-	if (fct -> nbr_BB() > 0) {
+    if (fct -> nbr_BB() > 0) {
 	  Basic_block * BB = fct -> get_BB(0);
 	  BB ->display();
 	  Dfg * dfg = new Dfg(BB);
 	  dfg->restitute(NULL,"./tmp/graph_dfg0.dot", true);
-	  cout << "temps critique : "<< dfg->get_critical_path() << endl;
+      cout << "temps critique : "<< dfg->get_critical_path() << endl;
+      dfg->scheduling();
+      dfg->display_sheduled_instr();
 	}
 	if (fct -> nbr_BB()  > 1){
 	  Basic_block * BB = fct -> get_BB(1);
@@ -29,13 +31,17 @@ int main(int argc, char ** argv){
 	  Dfg *  dfg = new Dfg(BB);
 	  dfg->restitute(NULL,"./tmp/graph_dfg1.dot", true);
 	  cout << "temps critique : "<< dfg->get_critical_path() << endl;
+      dfg->scheduling();
+      dfg->display_sheduled_instr();
 	  
 	}
 	if (fct -> nbr_BB()  > 2){
 	  Basic_block * BB = fct -> get_BB(2);
 	  BB ->display();
-	  Dfg *  dfg = new Dfg(BB);
-	  dfg->restitute(NULL,"./tmp/graph_dfg2.dot", true);
-	  cout << "temps critique : "<< dfg->get_critical_path() << endl;
+      // Dfg *  dfg = new Dfg(BB);
+      // dfg->restitute(NULL,"./tmp/graph_dfg2.dot", true);
+      //cout << "temps critique : "<< dfg->get_critical_path() << endl;
+      // dfg->scheduling();
+      // dfg->display_sheduled_instr();
 	}
 }

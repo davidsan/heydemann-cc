@@ -81,6 +81,12 @@ public:
 */	
 	void display_sheduled_instr();
 
+    /**
+     * @brief number of frozen cycle
+     * @return number of frozen cycle
+     */
+
+
 private:
 	Basic_block *_bb;
 	list <Node_dfg*> list_node_dfg;
@@ -94,6 +100,8 @@ private:
 	int _length;
 	int *_read; 
 	int _index_branch;
+
+
 };
 
 #endif
