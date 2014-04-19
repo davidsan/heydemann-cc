@@ -303,55 +303,69 @@ void add_dep_link(Instruction *pred, Instruction* succ, t_Dep type){
 
 void Basic_block::comput_pred_succ_dep(){
 
-  link_instructions();
-  Instruction *i_current=this->get_last_instruction();
-  Instruction *i_previous = i_current->get_prev();
-  Instruction *itmp = NULL;
-  
-  /*il faut faire ce qu'il faut pour remplir les listes
-   
+    link_instructions();
+    Instruction *i_current=this->get_last_instruction();
+    Instruction *itmp = NULL;
+
+    /*il faut faire ce qu'il faut pour remplir les listes
+
    list <dep*> _succ_dep; // instructions qui dépendent de this avec type de dep
    list <dep*> _pred_dep; // instructions dont depend this avec type de dep
    de la classe Instruction pour chacune des instructions du BB
-   
+
    NB : la fonction add_dep_link ci-dessus peut vous être utile...
-   
+
    */
-  
-  while (i_previous) {
-    itmp = i_previous;
-    while (itmp) {
-      t_Dep dep=i_current->is_dependant(itmp);
-      if(dep != NONE){
-        add_dep_link(i_previous, i_current, dep);
-        break;
-      }
-      itmp = itmp->get_prev();
+
+    while (i_current && i_current->get_next() != get_first_instruction()) {
+        itmp = i_current->get_prev();
+        /* reset the booleans */
+        bool raw1, raw2, war;
+        raw1=false;
+        raw2=false;
+        war=false;
+        while (itmp && itmp->get_next() != get_first_instruction()) {
+            if(!raw1 && itmp->is_dep_RAW1(i_current)){
+                add_dep_link(itmp, i_current, RAW);
+                cerr<<itmp->get_index() << " " << i_current->get_index() << " RAW1" << endl;
+                raw1=true;
+            }
+            if(!raw2 && itmp->is_dep_RAW2(i_current)){
+                add_dep_link(itmp, i_current, RAW);
+                cerr<<itmp->get_index() << " " << i_current->get_index() << " RAW2" << endl;
+                raw2=true;
+            }
+            if(itmp->is_dep_WAR(i_current)){
+                add_dep_link(itmp, i_current, WAR);
+                cerr<<itmp->get_index() << " " << i_current->get_index() << " WAR" << endl;
+                war=true;
+            }
+            if(!war && itmp->is_dep_WAW(i_current)){
+                add_dep_link(itmp, i_current, WAW);
+                cerr<<itmp->get_index() << " " << i_current->get_index() << " WAW" << endl;
+                break;
+            }
+            itmp = itmp->get_prev();
+        }
+        i_current = i_current->get_prev();
     }
-    i_current = i_previous;
-    i_previous = i_previous->get_prev();
-    
-  }
-  
-  //il faut  rattacher toute les instructions sans successeurs(dependances)
-  //au saut de fin de BB par une dépendance de controle si le BB se termine par un saut
-  i_previous = this->get_first_instruction();
-  i_current = i_previous->get_next();
-  Node * n_branch = get_branch();
-  if(n_branch == NULL){
-    return;
-  }
-  Instruction * i_branch = (dynamic_cast <Instruction *> (n_branch->get_line()));
-  
-  while (i_current) {
-    if(i_previous->get_nb_succ() == 0){
-      add_dep_link(i_previous, i_branch, CONTROL);
+
+    //il faut  rattacher toute les instructions sans successeurs(dependances)
+    //au saut de fin de BB par une dépendance de controle si le BB se termine par un saut
+
+    i_current = this->get_first_instruction();
+    Node * n_branch = get_branch();
+    if(n_branch == NULL){
+        return;
     }
-    i_previous = i_current;
-    i_current = i_current->get_next();
-    
-  }
-  
+    Instruction * i_branch = (dynamic_cast <Instruction *> (n_branch->get_line()));
+
+    while (i_current != get_branch()->get_line()) {
+        if(i_current->get_nb_succ() == 0){
+            add_dep_link(i_current, i_branch, CONTROL);
+        }
+        i_current = i_current->get_next();
+    }
 
 }
 
