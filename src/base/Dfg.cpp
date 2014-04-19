@@ -439,6 +439,11 @@ bool compare_instructionFirst(Node_dfg* first, Node_dfg* second){
 void Dfg::scheduling(){
     list<Node_dfg*> prets;
     list<Node_dfg*>::iterator it;
+
+    for(it= list_node_dfg.begin(); it!=list_node_dfg.end(); it ++){
+        (*it)->compute_nb_descendant();
+    }
+
     for(it=_roots.begin(); it!=_roots.end(); it ++){
         prets.push_back(*it);
     }

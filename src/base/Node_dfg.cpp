@@ -90,3 +90,12 @@ void Node_dfg::set_tready(int t){
 int Node_dfg::get_tready(){
    return _tready;
 }
+
+void Node_dfg::compute_nb_descendant(){
+    list<Node_dfg*>::iterator ita;
+    for(ita=pred_begin(); ita!=pred_end(); ita++){
+        Node_dfg * n=*ita;
+        n->set_nb_descendant(n->get_nb_descendant()+1);
+        n->compute_nb_descendant();
+    }
+}

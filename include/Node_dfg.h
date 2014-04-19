@@ -99,6 +99,10 @@ public:
 */
 	int get_tready();
 
+/**
+ * \brief compute_nb_descendant
+ */
+    void compute_nb_descendant();
 
 private:
 	list <Arc_t *> _arc;
