@@ -283,8 +283,9 @@ list<Node_dfg*> Dfg::reverse_topological_order() {
         }
         // ajout des predecesseurs
         if(ready){
-
-            res.push_back(current);
+            if(_read[current->get_instruction()->get_index()] == 0){
+                res.push_back(current);
+            }
             _read[current->get_instruction()->get_index()] = 1;
 
             for(it=current->pred_begin(); it!=current->pred_end(); it++){
