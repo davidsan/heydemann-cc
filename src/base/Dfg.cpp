@@ -415,19 +415,19 @@ struct sortFrozen {
 };
 
 bool compare_weight(Node_dfg* first, Node_dfg* second){
-   return (first->get_weight() < second->get_weight());
+   return (first->get_weight() > second->get_weight());
 }
 
 bool compare_latency(Node_dfg* first, Node_dfg* second){
-   return (first->get_instruction()->get_latency() < second->get_instruction()->get_latency());
+   return (first->get_instruction()->get_latency() > second->get_instruction()->get_latency());
 }
 
 bool compare_successeurs(Node_dfg* first, Node_dfg* second){
-   return (first->get_nb_arcs() < second->get_nb_arcs());
+   return (first->get_nb_arcs() > second->get_nb_arcs());
 }
 
 bool compare_descendant(Node_dfg* first, Node_dfg* second){
-   return (first->get_nb_descendant() < second->get_nb_descendant());
+   return (first->get_nb_descendant() > second->get_nb_descendant());
 }
 
 bool compare_instructionFirst(Node_dfg* first, Node_dfg* second){
@@ -449,15 +449,15 @@ void Dfg::scheduling(){
         prets.sort(compare_weight);
         prets.sort(sortFrozen(new_order));
         Node_dfg* n = prets.front();
-        prets.pop_front();
         new_order.push_back(n);
         for (int i = 0; i < n->get_nb_arcs(); i++) {
             Arc_t* a = n->get_arc(i);
             Node_dfg* succ = a->next;
-            if (!contains(&prets,succ) && succ != n){ //si il est deja pret on fait rien
+            if (!contains(&prets,succ) && !contains(&new_order, succ)){ //si il est deja pret on fait rien
                 prets.push_back(succ);
             }
         }
+        prets.pop_front();
     }
 }
 
