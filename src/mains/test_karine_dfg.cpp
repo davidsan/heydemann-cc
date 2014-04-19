@@ -25,8 +25,8 @@ int main(int argc, char ** argv){
         char numstr[64];
         sprintf(numstr, "./tmp/graph_dfg%d.dot", i);
         dfg->restitute(NULL,numstr, true);
-//        cout << "temps critique : "<< dfg->get_critical_path() << endl;
-//        dfg->scheduling();
-//        dfg->display_scheduled_instr();
+        cout << "temps critique : "<< dfg->get_critical_path() << endl;
+        dfg->scheduling();
+        dfg->display_scheduled_instr();
     }
 }
