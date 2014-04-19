@@ -473,7 +473,7 @@ int nb_cycles(list<Node_dfg*> l){
     return result;
 }
 
-void Dfg::display_sheduled_instr(){
+void Dfg::display_scheduled_instr(){
    list <Node_dfg*>::iterator it;
    Instruction *inst;
    cout<<"displaying scheduled instr"<<endl;

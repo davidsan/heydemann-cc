@@ -79,7 +79,7 @@ public:
 
 /**	\brief	display the instruction according to the new_order list
 */	
-	void display_sheduled_instr();
+	void display_scheduled_instr();
 
     /**
      * @brief number of frozen cycle
