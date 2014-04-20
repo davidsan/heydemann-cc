@@ -447,14 +447,11 @@ void Basic_block::register_rename(list<int> dead_regs){
         cpt = max(reg_max, cpt);
         inst = inst->get_prev();
     }
-    //cerr << "cpt = " << cpt << endl;
 
     // parcours de toutes les instructions du BB en partant de la fin
     // ici on fait du renommage de registres
     inst = this->get_last_instruction();
     while (inst && inst->get_next() != get_first_instruction()) {
-        //cerr << "traitement de l'instruction " << inst->get_index() << endl;
-        //cerr << "cpt = " << cpt << endl;
         int dst = -1;
         int src1 = -1;
         int src2 = -1;
