@@ -307,6 +307,7 @@ void Function::comput_succ_pred_BB(){
       instr = (dynamic_cast <Instruction *> (n->get_line()));
     }
     if (instr != NULL) {
+      // saut conditionnel
       if (instr -> get_format() == I) {
         next->set_predecessor(current);
         current->set_successor2(next);
@@ -318,6 +319,7 @@ void Function::comput_succ_pred_BB(){
           succ->set_predecessor(current);
         }
       }else if(instr -> get_format () == J){
+        // saut inconditionnel
         op=instr -> get_op1();
         olb=(dynamic_cast <OPLabel *> (op));
         succ = find_label_BB(olb);
@@ -327,6 +329,7 @@ void Function::comput_succ_pred_BB(){
         }
       }
     }else{
+      // pas de saut
       current->set_successor1(next);
       next->set_predecessor(current);
     }
