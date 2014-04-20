@@ -40,13 +40,25 @@ int main(int argc, char ** argv){
   
   
   
-  Function * fct = p2.get_function(2);
+  Function * fct = p2.get_function(0);
   fct -> comput_basic_block();
+  fct -> comput_label();
   fct -> comput_succ_pred_BB();
-  fct -> test();
+  // fct -> test();
+
+
+  fct->get_BB(0)->display();
+
+
+  cerr << "Renaming" << endl;
+
+  list<int> l;
+  fct->get_BB(0)->register_rename(l);
   
-  
-  
+  cerr << "After renaming" << endl;
+
+  fct->get_BB(0)->display();
+
   /* TEST DE LA CONSTRUCTION DES CFG et donc des succ/pred des BB */
 //  if (p2.nbr_func() > 2){
 //    p2.get_function(2)->display();

@@ -166,7 +166,13 @@ public:
 /**	\brief	this method is to be used to test other methods
  */
    void test();
-   
+
+
+   /**
+    * \brief this method try to rename the register
+    */
+   void register_rename(list<int>);
+
 #define NB_REGISTRES 32
 
 private:

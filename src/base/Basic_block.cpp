@@ -421,3 +421,85 @@ void Basic_block::test(){
 
    cout << endl;
 }
+
+
+void Basic_block::register_rename(list<int> dead_regs){
+    int reg_to_use[49];
+    for(int i = 0; i < 49; i++){
+        reg_to_use[i] = -1;
+    }
+    int cpt=0;
+    Instruction *inst = this->get_last_instruction();
+    // parcours de toutes les instructions du BB en partant de la fin
+    // ici on calcule le cpt du registre
+    inst = this->get_last_instruction();
+    while (inst && inst->get_next() != get_first_instruction()) {
+        int reg_max=-1;
+        if(inst->get_reg_dst() != NULL){
+            reg_max = max(reg_max, inst->get_reg_dst()->get_reg());
+        }
+        if(inst->get_reg_src1() != NULL){
+            reg_max = max(reg_max, inst->get_reg_src1()->get_reg());
+        }
+        if(inst->get_reg_src2() != NULL){
+            reg_max = max(reg_max, inst->get_reg_src2()->get_reg());
+        }
+        cpt = max(reg_max, cpt);
+        inst = inst->get_prev();
+    }
+    //cerr << "cpt = " << cpt << endl;
+
+    // parcours de toutes les instructions du BB en partant de la fin
+    // ici on fait du renommage de registres
+    inst = this->get_last_instruction();
+    while (inst && inst->get_next() != get_first_instruction()) {
+        //cerr << "traitement de l'instruction " << inst->get_index() << endl;
+        //cerr << "cpt = " << cpt << endl;
+        int dst = -1;
+        int src1 = -1;
+        int src2 = -1;
+        // calculer les registres utilisés et les mettre dans les entiers prévus
+        if(inst->get_reg_dst() != NULL){
+            dst = inst->get_reg_dst()->get_reg();
+        }
+        if(inst->get_reg_src1() != NULL){
+            src1 = inst->get_reg_src1()->get_reg();
+        }
+        if(inst->get_reg_src2() != NULL){
+            src2 = inst->get_reg_src2()->get_reg();
+        }
+
+        t_Operator op = inst->get_opcode();
+        if(op == sw){
+            if(src1 != -1 &&
+                    reg_to_use[src1] != -1 &&
+                    cpt < 49){
+                // il a déjà été utilisé donc on change car sw
+                reg_to_use[src1] = cpt;
+                cpt++;
+            }
+        }
+
+
+        // renommage de registre avec le tableau reg_to_use
+        if(inst->get_reg_dst() != NULL){
+            if( reg_to_use[dst] == -1 ) {
+                reg_to_use[dst] = dst;
+            }
+            inst->get_reg_dst()->set_reg( reg_to_use[dst] );
+        }
+        if(inst->get_reg_src1() != NULL){
+            if( reg_to_use[src1] == -1 ) {
+                reg_to_use[src1] = src1;
+            }
+            inst->get_reg_src1()->set_reg( reg_to_use[src1] );
+        }
+        if(inst->get_reg_src2() != NULL){
+            if( reg_to_use[src2] == -1 ) {
+                reg_to_use[src2] = src2;
+            }
+            inst->get_reg_src2()->set_reg( reg_to_use[src2] );
+        }
+        inst = inst->get_prev();
+    }
+}
