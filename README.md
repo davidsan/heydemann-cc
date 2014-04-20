@@ -1,7 +1,7 @@
 heydemann-cc
 ============
 
-MIPS compiler for the advanced compiler course
+Ordonnancement d'instructions MIPS, projet du module de compilation avancée
 
 
 * Construction de la liste des fonctions dans un programme
