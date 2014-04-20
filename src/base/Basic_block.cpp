@@ -327,22 +327,22 @@ void Basic_block::comput_pred_succ_dep(){
         while (itmp && itmp->get_next() != get_first_instruction()) {
             if(!raw1 && itmp->is_dep_RAW1(i_current)){
                 add_dep_link(itmp, i_current, RAW);
-                cerr<<itmp->get_index() << " " << i_current->get_index() << " RAW1" << endl;
+                // cerr<<itmp->get_index() << " " << i_current->get_index() << " RAW1" << endl;
                 raw1=true;
             }
             if(!raw2 && itmp->is_dep_RAW2(i_current)){
                 add_dep_link(itmp, i_current, RAW);
-                cerr<<itmp->get_index() << " " << i_current->get_index() << " RAW2" << endl;
+                // cerr<<itmp->get_index() << " " << i_current->get_index() << " RAW2" << endl;
                 raw2=true;
             }
             if(itmp->is_dep_WAR(i_current)){
                 add_dep_link(itmp, i_current, WAR);
-                cerr<<itmp->get_index() << " " << i_current->get_index() << " WAR" << endl;
+                // cerr<<itmp->get_index() << " " << i_current->get_index() << " WAR" << endl;
                 war=true;
             }
             if(!war && itmp->is_dep_WAW(i_current)){
                 add_dep_link(itmp, i_current, WAW);
-                cerr<<itmp->get_index() << " " << i_current->get_index() << " WAW" << endl;
+                // cerr<<itmp->get_index() << " " << i_current->get_index() << " WAW" << endl;
                 break;
             }
             itmp = itmp->get_prev();
