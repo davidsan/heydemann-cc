@@ -474,7 +474,7 @@ int nb_cycles(list<Node_dfg*> l){
     for(it=l.begin(); boost::next(it)!=l.end(); it++){
         Node_dfg* current = *it;
         Node_dfg* next = *(boost::next(it));
-        result += min(1, t_delay[current->get_instruction()->get_type()][next->get_instruction()->get_type()]);
+        result += max(1, t_delay[current->get_instruction()->get_type()][next->get_instruction()->get_type()]);
     }
     return result;
 }
