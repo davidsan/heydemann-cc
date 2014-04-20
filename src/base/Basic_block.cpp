@@ -428,7 +428,7 @@ void Basic_block::register_rename(list<int> dead_regs){
     for(int i = 0; i < 49; i++){
         reg_to_use[i] = -1;
     }
-    int cpt=0;
+    int cpt=32;
     Instruction *inst = this->get_last_instruction();
     // parcours de toutes les instructions du BB en partant de la fin
     // ici on calcule le cpt du registre
