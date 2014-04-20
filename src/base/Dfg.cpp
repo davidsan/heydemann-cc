@@ -400,9 +400,9 @@ struct sortFrozen {
               Arc_t* a = *ita;
               // si pointe vers np
               if(a->next == np){
-                  int delai_lama = size - i;
+                  int delai_minimal = size - i;
                   // si le delai est > à size - i
-                  if(a->delai > delai_lama){
+                  if(a->delai > delai_minimal){
                       // mettre à jour le delai (res) avec un max
                       res=max(res, a->delai);
                   }
