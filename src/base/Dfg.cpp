@@ -404,7 +404,7 @@ struct sortFrozen {
                   // si le delai est > à size - i
                   if(a->delai > delai_minimal){
                       // mettre à jour le delai (res) avec un max
-                      res=max(res, a->delai);
+                      res=max(res, a->delai - delai_minimal);
                   }
               }
           }
