@@ -482,14 +482,14 @@ int nb_cycles(list<Node_dfg*> l){
 void Dfg::display_scheduled_instr(){
    list <Node_dfg*>::iterator it;
    Instruction *inst;
-   cout<<"displaying scheduled instr"<<endl;
+   cout<<"Displaying scheduled instructions"<<endl;
    for(it=new_order.begin(); it!=new_order.end(); it++){
       inst=(*it)->get_instruction();
       cout<<"i"<<inst->get_index()<<": "<<inst->get_content()<<endl;
    }
 
-   cout << "nb cycles normal : " << nb_cycles(list_node_dfg)<< endl;
-   cout << "nb cycles ordonnancé : " << nb_cycles(new_order)<< endl;
+   cout << "Number of cycles w/out scheduling : " << nb_cycles(list_node_dfg)<< endl;
+   cout << "Number of cycles with scheduling : " << nb_cycles(new_order)<< endl;
 }
 
 
