@@ -358,7 +358,7 @@ void Dfg::comput_critical_path(){
 
 
 /*
- * comput_critical_path()
+ * get_critical_path()
  * criticalpath=0;
  * for all node in _roots
  *   criticalpath = max (criticalpath,
