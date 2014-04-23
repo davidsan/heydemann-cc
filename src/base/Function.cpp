@@ -244,7 +244,8 @@ void Function::comput_basic_block(){
 
   // si le dernier BB ajouté n'est pas celui qui commence par début
   // alors il faut ajouter un BB qui se termine jusqu'à la fin
-  if(get_BB(nbr_BB()-1)->get_head() != debut && !debut->get_line()->isDirective()){
+  if(!debut->get_line()->isDirective()
+          && ((nbr_BB() == 0) || (get_BB(nbr_BB()-1)->get_head() != debut))){
       add_BB(debut, prev, ind);
   }
   // set the last BB's end to the end
