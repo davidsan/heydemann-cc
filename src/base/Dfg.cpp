@@ -470,14 +470,46 @@ void Dfg::scheduling(){
 
 
 int nb_cycles(list<Node_dfg*> l){
-    int result = 0;
+    int res=1, tmp = 0;
     list <Node_dfg*>::iterator it;
+#ifdef DEBUG
+    cerr << endl;
+#endif
     for(it=l.begin(); boost::next(it)!=l.end(); it++){
         Node_dfg* current = *it;
         Node_dfg* next = *(boost::next(it));
-        result += max(1, t_delay[current->get_instruction()->get_type()][next->get_instruction()->get_type()]);
+        bool dep_raw = false;
+        for (int i = 0; i < current->get_nb_arcs(); i++) {
+            Arc_t* a = current->get_arc(i);
+            if(a->next == next && a->dep == RAW){
+                dep_raw=true;
+                break;
+            }
+        }
+        if(dep_raw){
+            tmp = max(1, t_delay[current->get_instruction()->get_type()][next->get_instruction()->get_type()]);
+        }else{
+            tmp = 1;
+        }
+
+#ifdef DEBUG
+        cerr << "délai entre "
+             << current->get_instruction()->get_content()
+             << " ["
+             << current->get_instruction()->get_index()
+             << "] "
+             << " et "
+             << next->get_instruction()->get_content()
+             << " ["
+             << next->get_instruction()->get_index()
+             << "] "
+             << " = "
+             << tmp
+             << endl;
+#endif
+        res+=tmp;
     }
-    return result;
+    return res;
 }
 
 void Dfg::display_scheduled_instr(){
@@ -488,7 +520,6 @@ void Dfg::display_scheduled_instr(){
       inst=(*it)->get_instruction();
       cout<<"i"<<inst->get_index()<<": "<<inst->get_content()<<endl;
    }
-
    cout << "Number of cycles w/out scheduling : " << nb_cycles(list_node_dfg)<< endl;
    cout << "Number of cycles with scheduling : " << nb_cycles(new_order)<< endl;
 }
