@@ -67,6 +67,7 @@ Dfg::Dfg(Basic_block *bb){
       // le noeud courant est une branche (donc le noeud qui suit est un delayed slot)
       if(inst->is_branch()){
           _delayed_slot.push_back(*(++itn));
+          list_node_dfg.pop_back(); // retirer le noeud de la liste list_node_dfg
           break;
       }
 
