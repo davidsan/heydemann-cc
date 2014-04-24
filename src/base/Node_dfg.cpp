@@ -96,6 +96,5 @@ void Node_dfg::compute_nb_descendant(){
     for(ita=pred_begin(); ita!=pred_end(); ita++){
         Node_dfg * n=*ita;
         n->set_nb_descendant(n->get_nb_descendant()+1);
-        n->compute_nb_descendant();
     }
 }
