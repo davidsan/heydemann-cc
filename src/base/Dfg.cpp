@@ -438,7 +438,6 @@ bool compare_instructionFirst(Node_dfg* first, Node_dfg* second){
 
 
 void Dfg::scheduling(){
-    list<Node_dfg*> prets;
     list<Node_dfg*>::iterator it;
 
     for(it= list_node_dfg.begin(); it!=list_node_dfg.end(); it ++){
@@ -446,25 +445,25 @@ void Dfg::scheduling(){
     }
 
     for(it=_roots.begin(); it!=_roots.end(); it ++){
-        prets.push_back(*it);
+        _inst_ready.push_back(*it);
     }
-    while(prets.size() > 0){
-        prets.sort(compare_instructionFirst);
-        prets.sort(compare_descendant);
-        prets.sort(compare_successeurs);
-        prets.sort(compare_latency);
-        prets.sort(compare_weight);
-        prets.sort(sortFrozen(new_order));
-        Node_dfg* n = prets.front();
+    while(_inst_ready.size() > 0){
+        _inst_ready.sort(compare_instructionFirst);
+        _inst_ready.sort(compare_descendant);
+        _inst_ready.sort(compare_successeurs);
+        _inst_ready.sort(compare_latency);
+        _inst_ready.sort(compare_weight);
+        _inst_ready.sort(sortFrozen(new_order));
+        Node_dfg* n = _inst_ready.front();
         new_order.push_back(n);
         for (int i = 0; i < n->get_nb_arcs(); i++) {
             Arc_t* a = n->get_arc(i);
             Node_dfg* succ = a->next;
-            if (!contains(&prets,succ) && !contains(&new_order, succ)){ //si il est deja pret on fait rien
-                prets.push_back(succ);
+            if (!contains(&_inst_ready,succ) && !contains(&new_order, succ)){ //si il est deja pret on fait rien
+                _inst_ready.push_back(succ);
             }
         }
-        prets.pop_front();
+        _inst_ready.pop_front();
     }
 }
 
