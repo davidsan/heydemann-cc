@@ -444,6 +444,10 @@ void Dfg::scheduling(){
         (*it)->compute_nb_descendant();
     }
 
+    for(it= list_node_dfg.begin(); it!=list_node_dfg.end(); it ++){
+        cerr << (*it)->get_instruction()->get_index() << " desc =  " << (*it)->get_nb_descendant() << endl;
+    }
+
     for(it=_roots.begin(); it!=_roots.end(); it ++){
         _inst_ready.push_back(*it);
     }
