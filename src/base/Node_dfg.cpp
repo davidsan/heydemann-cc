@@ -13,10 +13,10 @@ Arc_t *Node_dfg::get_arc(int index){
 
    list<Arc_t*>::iterator it;
    it=_arc.begin();
-   
+
    if(index< (int)_arc.size()){
       for (int i=0; i<index; i++ ) it++;
-      return *it;	
+      return *it;
    }
    else
       return NULL;
@@ -80,7 +80,7 @@ void Node_dfg::set_nb_descendant(int descent){
 
 int Node_dfg::get_nb_descendant(){
    return _nbr_descendant;
-	
+
 }
 
 void Node_dfg::set_tready(int t){
@@ -92,10 +92,46 @@ int Node_dfg::get_tready(){
 }
 
 void Node_dfg::compute_nb_descendant(){
-    list<Node_dfg*>::iterator ita;
-    for(ita=pred_begin(); ita!=pred_end(); ita++){
-        Node_dfg * n=*ita;
-        n->set_nb_descendant(n->get_nb_descendant()+1);
-        n->compute_nb_descendant();
-    }
+   list<Node_dfg *>::iterator it;
+   Node_dfg * node;
+   for(it = pred_begin(); it != pred_end(); it++) {
+      node = *it;
+      node->addElem(this);
+      node->compute_nb_descendant();
+   }
+}
+
+
+bool containsNode(list<Node_dfg*>* l, Node_dfg* n){
+   list<Node_dfg*>::iterator it;
+
+   for(it=l->begin(); it!= l->end(); it++){
+      if( (*it)==n ){
+	 return true;
+      }
+   }
+   return false;
+}
+
+void Node_dfg::addElem(Node_dfg* node) {
+   if (!containsNode(&_desc, node)) {
+      _desc.push_back(node);
+   }
+}
+
+void Node_dfg::merge_desc() {
+   list<Node_dfg *>::iterator it;
+   list<Node_dfg *>::iterator it2;
+   Node_dfg * node;
+   for(it = pred_begin(); it != pred_end(); it++) {
+      node = *it;
+      for (it2 = _desc.begin(); it2!= _desc.end();it2++) {
+         node->addElem(*it2);
+      }
+      node->merge_desc();
+   }
+}
+
+int Node_dfg::nb_desc_in_list() {
+   return _desc.size();
 }
