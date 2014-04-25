@@ -6,7 +6,7 @@ Arc_t* new_arc(int del, t_Dep d, Node_dfg *n){
    arc->delai=del;
    arc->dep=d;
    arc->next=n;
-   
+
    return arc;
 }
 
@@ -34,7 +34,7 @@ int get_delay(t_Dep dep, Instruction *from, Instruction *to){
 
 // A REMPLIR
 Dfg::Dfg(Basic_block *bb){
-  
+
   list<Arc_t*>::iterator ita;
   list<Node_dfg*>::iterator itn;
 
@@ -43,7 +43,7 @@ Dfg::Dfg(Basic_block *bb){
   _nb_arc=0;
   _length=bb->get_nb_inst();;
   _read= new int[_length];
-  
+
   bb->comput_pred_succ_dep();
 
   // Création des noeuds DFG dans la liste list_node_dfg
@@ -106,24 +106,24 @@ Dfg::~Dfg(){}
 
 
 void Dfg::display(Node_dfg * node, bool first){
-   
-   
+
+
    list<Node_dfg*>::iterator it;
    it=_roots.begin();
 
-   if(first)	
-      for(int i=0; i<_length; i++)	
-	 _read[i]=0;  	
-   
-   for (unsigned int j=0; j<_roots.size();j++ ){ 
-      if(first) node = *it;	
-			
+   if(first)
+      for(int i=0; i<_length; i++)
+	 _read[i]=0;
+
+   for (unsigned int j=0; j<_roots.size();j++ ){
+      if(first) node = *it;
+
 
       if(!_read[node->get_instruction()->get_index()]){
 	 _read[node->get_instruction()->get_index()]=1;
 	 cout<<"pour i"<<node->get_instruction()->get_index()<<endl;
 	 cout<<"l'instruction "<<node->get_instruction()->get_content()<<endl;
-			
+
 	 //On affiche ses successeurs s'il en a
 	 for(int i=0;i<node->get_nb_arcs();i++){
 	    if (node->get_arc(i)){
@@ -156,16 +156,16 @@ void Dfg::restitute(Node_dfg * node, string const filename, bool first){
       remove(filename.c_str());
    ofstream monflux(filename.c_str(), ios::app);
    list<Node_dfg*>::iterator it;
- 
+
    if(first && _length){
-     
+
       for(int i=0; i<_length; i++)
 	 _read[i]=0;
-      
+
       it = _delayed_slot.begin();
-      
+
       int index_min = _length;
-      
+
       for(unsigned int i=0; i < _delayed_slot.size(); i++){
 	 _read[(*it)->get_instruction()->get_index()] = 1;
 	 if (index_min > (*it)->get_instruction()->get_index())
@@ -176,23 +176,23 @@ void Dfg::restitute(Node_dfg * node, string const filename, bool first){
       monflux<<"digraph G1 {"<<endl;
       for(int i=0; i<index_min; i++){
 	 monflux<<"i"<<i<< ";"<<endl;
-	 
+
       }
-   }	
+   }
    it=_roots.begin();
-   for (unsigned int j=0; j<_roots.size();j++ ){ 		
+   for (unsigned int j=0; j<_roots.size();j++ ){
 
       if(first) node = *it;
-		
-      if(monflux){			
+
+      if(monflux){
 	 //monflux.open(filename.c_str(), ios::app);
 	 if(!_read[node->get_instruction()->get_index()]){
 	    _read[node->get_instruction()->get_index()]=1;
-					
+
 	    //On affiche ses successeurs s'il en a
 	    for(int i=0; i<node->get_nb_arcs(); i++){
 	       if (node->get_arc(i)){
-	   
+
 		  monflux<<"i"<<node->get_instruction()->get_index();
 		  monflux<<" ->  i" << node->get_arc(i)->next->get_instruction()->get_index();
 
@@ -204,10 +204,10 @@ void Dfg::restitute(Node_dfg * node, string const filename, bool first){
 	       }
 	    }
 	    monflux.close();
-	
+
 	    for(int i=0;i<node->get_nb_arcs();i++){
 	       if (node->get_arc(i))
-		  restitute(node->get_arc(i)->next,filename.c_str(),false);	
+		  restitute(node->get_arc(i)->next,filename.c_str(),false);
 	    }
 	 }
       }
@@ -221,7 +221,7 @@ void Dfg::restitute(Node_dfg * node, string const filename, bool first){
       monflux.close();
    }
    return;
- 
+
 }
 
 bool Dfg::read_test(){
@@ -232,7 +232,7 @@ bool Dfg::read_test(){
 
 bool contains(list<Node_dfg*>* l, Node_dfg* n){
    list<Node_dfg*>::iterator it;
-   
+
    for(it=l->begin(); it!= l->end(); it++){
       if( (*it)==n ){
 	 return true;
@@ -433,20 +433,27 @@ bool compare_descendant(Node_dfg* first, Node_dfg* second){
 }
 
 bool compare_instructionFirst(Node_dfg* first, Node_dfg* second){
-    return (first->get_instruction()->get_index() < second->get_instruction()->get_index());
+   return (first->get_instruction()->get_index() < second->get_instruction()->get_index());
 }
 
 
 void Dfg::scheduling(){
-    list<Node_dfg*>::iterator it;
+   list<Node_dfg*>::iterator it;
 
-    for(it= list_node_dfg.begin(); it!=list_node_dfg.end(); it ++){
-        (*it)->compute_nb_descendant();
-    }
+   for(it= list_node_dfg.begin(); it!=list_node_dfg.end(); it ++){
+      (*it)->compute_nb_descendant();
+      (*it)->merge_desc();
+   }
 
-    for(it=_roots.begin(); it!=_roots.end(); it ++){
-        _inst_ready.push_back(*it);
-    }
+   // maj des descendant
+   for(it = list_node_dfg.begin(); it!= list_node_dfg.end(); it++){
+      (*it)->set_nb_descendant((*it)->nb_desc_in_list());
+      cout << "Index : " << (*it)->get_instruction()->get_index() << " Nb desc : " << (*it)->get_nb_descendant() << endl;
+   }
+
+   for(it=_roots.begin(); it!=_roots.end(); it ++){
+       _inst_ready.push_back(*it);
+   }
     while(_inst_ready.size() > 0){
         _inst_ready.sort(compare_instructionFirst);
         _inst_ready.sort(compare_descendant);

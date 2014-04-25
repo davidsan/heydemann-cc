@@ -70,7 +70,7 @@ public:
 */
 	void set_instruction( Instruction* );
 
-	
+
 
 /**	\brief	set the weight
 */
@@ -89,29 +89,45 @@ public:
 /**	\brief	get the number of descendant
 */
 	int get_nb_descendant();
-/**  
+/**
  	\brief	set tready to t
 */
 	void set_tready(int t);
 
-/**  
- 	\brief	returns tready 
+/**
+ 	\brief	returns tready
 */
 	int get_tready();
 
 /**
  * \brief compute_nb_descendant
  */
-    void compute_nb_descendant();
+   void compute_nb_descendant();
+
+/**
+ * \brief add a node in _desc if not exist
+ */
+   void addElem(Node_dfg * node);
+
+/**
+ * \brief return _desc.size()
+ */
+   int nb_desc_in_list();
+
+/**
+ * \brief merge _desc with predecessor _desc
+ */
+   void merge_desc();
 
 private:
 	list <Arc_t *> _arc;
 	list <Node_dfg *> _pred; //liste des noeuds predecesseurs
+	list <Node_dfg *> _desc; //liste des noeuds descendants
 	Instruction * _inst; // instruction correspondante
 	int _nbr_descendant; // nombre de descendants
 	int _poids;   // poids dans le chemin critique
-	int _tready;  
-	
+	int _tready;
+
 };
 
 
