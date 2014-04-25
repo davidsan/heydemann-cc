@@ -351,7 +351,7 @@ void Dfg::comput_critical_path(){
   it=list_node_dfg.begin();
   for(unsigned int k = 0; k < list_node_dfg.size(); k++, it++){
     Node_dfg* node = *it;
-    cout << "node inst " << node -> get_instruction() -> get_index() << " poids=" << node->get_weight() << " nb succ=" << node->get_nbr_arc() << endl;
+    cout << "node inst " << node -> get_instruction() -> get_index() << " poids=" << node->get_weight() << " nb succ=" << node->get_nb_arcs() << endl;
   }
 #endif
 }
@@ -439,6 +439,8 @@ bool compare_instructionFirst(Node_dfg* first, Node_dfg* second){
 
 void Dfg::scheduling(){
    list<Node_dfg*>::iterator it;
+   Node_dfg * node;
+   t_Regle regle;
 
    for(it= list_node_dfg.begin(); it!=list_node_dfg.end(); it ++){
       (*it)->compute_nb_descendant();
@@ -448,30 +450,59 @@ void Dfg::scheduling(){
    // maj des descendant
    for(it = list_node_dfg.begin(); it!= list_node_dfg.end(); it++){
       (*it)->set_nb_descendant((*it)->nb_desc_in_list());
+      #ifdef DEBUG
       cout << "Index : " << (*it)->get_instruction()->get_index() << " Nb desc : " << (*it)->get_nb_descendant() << endl;
+      #endif
    }
 
    for(it=_roots.begin(); it!=_roots.end(); it ++){
        _inst_ready.push_back(*it);
    }
-    while(_inst_ready.size() > 0){
-        _inst_ready.sort(compare_instructionFirst);
-        _inst_ready.sort(compare_descendant);
-        _inst_ready.sort(compare_successeurs);
-        _inst_ready.sort(compare_latency);
-        _inst_ready.sort(compare_weight);
-        _inst_ready.sort(sortFrozen(new_order));
-        Node_dfg* n = _inst_ready.front();
-        new_order.push_back(n);
-        for (int i = 0; i < n->get_nb_arcs(); i++) {
-            Arc_t* a = n->get_arc(i);
-            Node_dfg* succ = a->next;
-            if (!contains(&_inst_ready,succ) && !contains(&new_order, succ)){ //si il est deja pret on fait rien
-                _inst_ready.push_back(succ);
-            }
-        }
-        _inst_ready.pop_front();
-    }
+   while(_inst_ready.size() > 0){
+      node = _inst_ready.front();
+      regle = INDEX;
+      _inst_ready.sort(compare_instructionFirst);
+      if (node != _inst_ready.front()) {
+         node = _inst_ready.front();
+         regle = INDEX;
+      }
+      _inst_ready.sort(compare_descendant);
+      if (node != _inst_ready.front()) {
+         node = _inst_ready.front();
+         regle = DESC;
+      }
+      _inst_ready.sort(compare_successeurs);
+      if (node != _inst_ready.front()) {
+         node = _inst_ready.front();
+         regle = SUCC;
+      }
+      _inst_ready.sort(compare_latency);
+      if (node != _inst_ready.front()) {
+         node = _inst_ready.front();
+         regle = LATENCE;
+      }
+      _inst_ready.sort(compare_weight);
+      if (node != _inst_ready.front()) {
+         node = _inst_ready.front();
+         regle = POIDS;
+      }
+      _inst_ready.sort(sortFrozen(new_order));
+      if (node != _inst_ready.front()) {
+         node = _inst_ready.front();
+         regle = GELE;
+      }
+      Node_dfg* n = _inst_ready.front();
+      new_order.push_back(n);
+      cout << "i" <<n->get_instruction()->get_index() << " regle : " << regle_str[regle] << endl;
+      for (int i = 0; i < n->get_nb_arcs(); i++) {
+         Arc_t* a = n->get_arc(i);
+         Node_dfg* succ = a->next;
+         if (!contains(&_inst_ready,succ) && !contains(&new_order, succ)){ //si il est deja pret on fait rien
+            _inst_ready.push_back(succ);
+         }
+      }
+      _inst_ready.pop_front();
+   }
 }
 
 
