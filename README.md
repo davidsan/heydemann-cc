@@ -28,4 +28,4 @@ Ordonnancement d'instructions MIPS, projet du module de compilation avancée
 * Renommage de registres
 
 
-Virginie Collombon (@PrincessePoney), David San (@davidsan)
+Virginie Collombon (@PrincessePoney), David Ieong (@david-ieong), David San (@davidsan)
