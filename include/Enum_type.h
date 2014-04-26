@@ -42,7 +42,7 @@ enum t_Dep {NONE, RAW, WAR, WAW, MEMDEP, CONTROL};
 
 enum t_Regle {GELE, POIDS, LATENCE, SUCC, DESC, INDEX};
 
-static std::string regle_str[]={ "GELE","POIDS","LATENCE", "SUCC", "DESCENDANTS", "INDEX" };
+static std::string regle_str[]={ "GEL","POIDS","LATENCE", "SUCCESSEURS", "DESCENDANTS", "INDEX" };
 
 /**	\brief	Structure allowing to add caracteristics to an operator*/
 	struct s_Profile {
